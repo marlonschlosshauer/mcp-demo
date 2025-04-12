@@ -1,20 +1,6 @@
 import React from "react";
-import { Caption, Card } from "@contentful/f36-components";
+import { ContentType } from "@/components/contentful/ContentType";
 
-export const GetContentType: React.FC<any> = ({
-  name,
-  displayField: fields,
-}) => {
-  if (!name) {
-    return;
-  }
-
-  return (
-    <Card>
-      <div className="flex flex-row gap-2">
-        {name}
-        {fields && <Caption>({fields.length})</Caption>}
-      </div>
-    </Card>
-  );
+export const GetContentType: React.FC<any> = (props) => {
+  return <ContentType {...props} />;
 };

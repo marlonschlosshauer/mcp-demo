@@ -1,21 +1,11 @@
 import React from "react";
 import { EntityList } from "@contentful/f36-components";
-import Link from "next/link";
+import { Entry } from "@/components/contentful/Entry";
 
-export const CreateEntry: React.FC<any> = ({ sys, fields }) => {
+export const CreateEntry: React.FC<any> = (props) => {
   return (
     <EntityList>
-      <Link
-        href={`https://app.contentful.com/spaces/${sys.space.sys.id}/entries/${sys.id}`}
-        target="_blank"
-      >
-        <EntityList.Item
-          title={`"${fields.name}"`}
-          description={sys.id}
-          contentType={sys.contentType.sys.id}
-          status={!sys.publishedCounter ? "draft" : "published"}
-        />
-      </Link>
+      <Entry {...props} />
     </EntityList>
   );
 };

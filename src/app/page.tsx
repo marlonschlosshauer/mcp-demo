@@ -3,66 +3,118 @@
 import { CreateEntry } from "@/components/chat/tools/contentful/CreateEntry";
 import { GetContentType } from "@/components/chat/tools/contentful/GetContentType";
 import { ListContentTypes } from "@/components/chat/tools/contentful/ListContentTypes";
+import { SearchEntries } from "@/components/chat/tools/contentful/SearchEntries";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useChat } from "@ai-sdk/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     maxSteps: 5,
   });
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch gap-2">
+    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch gap-4">
       {messages.map((message) => (
         <div key={message.id} className="whitespace-pre-wrap">
-          {message.role === "user" ? "User: " : "AI: "}
-          {message.parts.map((part, i) => {
-            console.log(part);
+          {message.role === "user" ? (
+            <Badge variant="default">You</Badge>
+          ) : (
+            <Badge variant="secondary">AI</Badge>
+          )}
+          <div className="flex flex-col gap-2 pt-2">
+            {message.parts.map((part, i) => {
+              console.log(part);
 
-            const key = `${message.id}-${i}`;
+              const key = `${message.id}-${i}`;
 
-            switch (part.type) {
-              case "text":
-                return <div key={key}>{part.text}</div>;
-              case "tool-invocation":
-                const text =
-                  /* @ts-ignore */
-                  part?.toolInvocation?.result?.content?.[0]?.text;
+              switch (part.type) {
+                case "text":
+                  return (
+                    <div key={key}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {part.text}
+                      </ReactMarkdown>
+                    </div>
+                  );
+                case "tool-invocation":
+                  const text =
+                    /* @ts-ignore */
+                    part?.toolInvocation?.result?.content?.[0]?.text;
 
-                if (!text) {
-                  return;
-                }
-
-                const props = JSON.parse(text);
-
-                if (!props) {
-                  return;
-                }
-                switch (part.toolInvocation.toolName) {
-                  case "get_content_type": {
-                    return <GetContentType key={key} {...props} />;
+                  if (!text) {
+                    return;
                   }
-                  case "list_content_types": {
-                    return <ListContentTypes key={key} {...props} />;
+
+                  const props = JSON.parse(text);
+
+                  if (!props) {
+                    return;
                   }
-                  case "update_entry":
-                  case "create_entry": {
-                    return <CreateEntry key={key} {...props} />;
-                  }
-                  default: {
-                    return (
-                      <pre key={key}>
-                        {JSON.stringify(part.toolInvocation, null, 2)}
-                      </pre>
-                    );
-                  }
-                }
-            }
-          })}
+
+                  return (
+                    <Card key={key}>
+                      <CardHeader>
+                        <CardTitle>
+                          Tool:{" "}
+                          {part.toolInvocation.toolName
+                            .replaceAll("_", " ")
+                            .toLocaleUpperCase()}
+                        </CardTitle>
+                        <CardDescription className="flex flex-rowg gap-1">
+                          <Badge variant="outline">
+                            id: {part.toolInvocation.toolCallId}
+                          </Badge>
+                          <Badge variant="outline">
+                            step: {part.toolInvocation.step}
+                          </Badge>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {(() => {
+                          switch (part.toolInvocation.toolName) {
+                            case "get_content_type": {
+                              return <GetContentType {...props} />;
+                            }
+                            case "list_content_types": {
+                              return <ListContentTypes {...props} />;
+                            }
+                            case "get_entry":
+                            case "update_entry":
+                            case "create_entry": {
+                              return <CreateEntry {...props} />;
+                            }
+                            case "search_entries": {
+                              return <SearchEntries {...props} />;
+                            }
+                            default: {
+                              return (
+                                <pre>
+                                  {JSON.stringify(part.toolInvocation, null, 2)}
+                                </pre>
+                              );
+                            }
+                          }
+                        })()}
+                      </CardContent>
+                    </Card>
+                  );
+              }
+            })}
+          </div>
         </div>
       ))}
       <form onSubmit={handleSubmit}>
         <input
-          disabled={status === "streaming"}
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 rounded shadow-xl"
+          disabled={status === "submitted" || status === "streaming"}
+          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 rounded shadow-xl bg-white disabled:bg-gray-500 disabled:cursor-progress"
           value={input}
           placeholder="Say something..."
           onChange={handleInputChange}
