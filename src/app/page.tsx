@@ -1,13 +1,16 @@
 "use client";
 
+import { CreateEntry } from "@/components/chat/tools/contentful/CreateEntry";
 import { GetContentType } from "@/components/chat/tools/contentful/GetContentType";
 import { ListContentTypes } from "@/components/chat/tools/contentful/ListContentTypes";
 import { useChat } from "@ai-sdk/react";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit, status } = useChat({
+    maxSteps: 5,
+  });
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch gap-2">
       {messages.map((message) => (
         <div key={message.id} className="whitespace-pre-wrap">
           {message.role === "user" ? "User: " : "AI: "}
@@ -40,6 +43,10 @@ export default function Chat() {
                   case "list_content_types": {
                     return <ListContentTypes key={key} {...props} />;
                   }
+                  case "update_entry":
+                  case "create_entry": {
+                    return <CreateEntry key={key} {...props} />;
+                  }
                   default: {
                     return (
                       <pre key={key}>
@@ -52,10 +59,10 @@ export default function Chat() {
           })}
         </div>
       ))}
-
       <form onSubmit={handleSubmit}>
         <input
-          className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
+          disabled={status === "streaming"}
+          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 rounded shadow-xl"
           value={input}
           placeholder="Say something..."
           onChange={handleInputChange}
