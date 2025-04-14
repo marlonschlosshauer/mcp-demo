@@ -15,18 +15,20 @@ export const ListContentTypes: React.FC<any> = ({ items }) => {
           <Table.Cell>Fields</Table.Cell>
           <Table.Cell>Updated at</Table.Cell>
           <Table.Cell>Created at</Table.Cell>
+          <Table.Cell></Table.Cell>
         </Table.Row>
       </Table.Head>
       <Table.Body>
         {items.map((ct: any, key: number) => (
-          <ContentTypeLink key={key} {...ct}>
-            <Table.Row>
-              <Table.Cell>{ct.name}</Table.Cell>
-              <Table.Cell>{ct.fields.length}</Table.Cell>
-              <Table.Cell>{ct.sys.updatedAt}</Table.Cell>
-              <Table.Cell>{ct.sys.createdAt}</Table.Cell>
-            </Table.Row>
-          </ContentTypeLink>
+          <Table.Row key={key}>
+            <Table.Cell>{ct.name}</Table.Cell>
+            <Table.Cell>{ct.fields.length}</Table.Cell>
+            <Table.Cell>{ct.sys.updatedAt}</Table.Cell>
+            <Table.Cell>{ct.sys.createdAt}</Table.Cell>
+            <Table.Cell>
+              <ContentTypeLink {...ct}>Link</ContentTypeLink>
+            </Table.Cell>
+          </Table.Row>
         ))}
       </Table.Body>
     </Table>
