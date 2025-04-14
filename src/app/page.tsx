@@ -113,8 +113,9 @@ export default function Chat() {
       ))}
       <form onSubmit={handleSubmit}>
         <input
+          autoFocus
           disabled={status === "submitted" || status === "streaming"}
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 rounded shadow-xl bg-white disabled:bg-gray-500 disabled:cursor-progress"
+          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 rounded shadow-xl bg-white disabled:bg-gray-500 disabled:text-gray-50 disabled:cursor-progress"
           value={input}
           placeholder="Say something..."
           onChange={handleInputChange}
