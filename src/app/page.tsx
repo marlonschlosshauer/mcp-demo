@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -111,6 +112,13 @@ export default function Chat() {
           </div>
         </div>
       ))}
+      {status === "submitted" && (
+        <div className="flex flex-col gap-2 pt-2">
+          <Skeleton className="w-full h-[20px] rounded-full" />
+          <Skeleton className="w-[60%] h-[16px] rounded-full" />
+          <Skeleton className="w-[80%] h-[12px] rounded-full" />
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <input
           autoFocus
