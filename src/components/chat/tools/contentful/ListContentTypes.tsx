@@ -19,8 +19,8 @@ export const ListContentTypes: React.FC<any> = ({ items }) => {
       </Table.Head>
       <Table.Body>
         {items.map((ct: any, key: number) => (
-          <ContentTypeLink {...ct}>
-            <Table.Row key={key}>
+          <ContentTypeLink key={key} {...ct}>
+            <Table.Row>
               <Table.Cell>{ct.name}</Table.Cell>
               <Table.Cell>{ct.fields.length}</Table.Cell>
               <Table.Cell>{ct.sys.updatedAt}</Table.Cell>
