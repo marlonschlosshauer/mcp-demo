@@ -77,7 +77,7 @@ export default function Chat() {
                           </Badge>
                         </CardDescription>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="overflow-auto">
                         {(() => {
                           switch (part.toolInvocation.toolName) {
                             case "get_content_type": {
