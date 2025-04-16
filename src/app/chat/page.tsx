@@ -1,6 +1,6 @@
 "use client";
 
-import { Markdown } from "@/components/chat/markdown/Markdown";
+import { Markdown } from "@/components/shared/markdown/Markdown";
 import { CreateEntry } from "@/components/chat/tools/contentful/CreateEntry";
 import { GetContentType } from "@/components/chat/tools/contentful/GetContentType";
 import { ListContentTypes } from "@/components/chat/tools/contentful/ListContentTypes";
