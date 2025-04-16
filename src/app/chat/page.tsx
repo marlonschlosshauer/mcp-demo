@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useChat } from "@ai-sdk/react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
@@ -91,6 +89,7 @@ export default function Chat() {
                             case "search_entries": {
                               return <SearchEntries {...props} />;
                             }
+
                             default: {
                               return (
                                 <pre>
