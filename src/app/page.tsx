@@ -1,5 +1,6 @@
 "use client";
 
+import { Markdown } from "@/components/chat/markdown/Markdown";
 import { CreateEntry } from "@/components/chat/tools/contentful/CreateEntry";
 import { GetContentType } from "@/components/chat/tools/contentful/GetContentType";
 import { ListContentTypes } from "@/components/chat/tools/contentful/ListContentTypes";
@@ -21,6 +22,7 @@ export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     maxSteps: 5,
   });
+
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch gap-4">
       {messages.map((message) => (
@@ -38,13 +40,7 @@ export default function Chat() {
 
               switch (part.type) {
                 case "text":
-                  return (
-                    <div key={key}>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {part.text}
-                      </ReactMarkdown>
-                    </div>
-                  );
+                  return <Markdown key={key} {...part} />;
                 case "tool-invocation":
                   const text =
                     /* @ts-ignore */
