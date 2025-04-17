@@ -1,20 +1,22 @@
 "use client";
 
 import { Markdown } from "@/components/shared/markdown/Markdown";
-import { CreateEntry } from "@/components/chat/tools/contentful/CreateEntry";
+import { GetEntry } from "@/components/chat/tools/contentful/GetEntry";
 import { GetContentType } from "@/components/chat/tools/contentful/GetContentType";
 import { ListContentTypes } from "@/components/chat/tools/contentful/ListContentTypes";
 import { SearchEntries } from "@/components/chat/tools/contentful/SearchEntries";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useChat } from "@ai-sdk/react";
+import { cn } from "../../lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { parseToolInvocationResult } from "@/lib/message";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
@@ -38,69 +40,97 @@ export default function Chat() {
 
               switch (part.type) {
                 case "text":
-                  return <Markdown key={key} {...part} />;
+                  return (
+                    <div
+                      key={key}
+                      className={cn(
+                        message.role === "user"
+                          ? "text-white bg-gray-950"
+                          : "text-gray-950/80 bg-gray-200",
+                        "mr-auto w-fit rounded-md px-3 py-2 text-left",
+                      )}
+                    >
+                      <Markdown {...part} />
+                    </div>
+                  );
                 case "tool-invocation":
-                  const text =
-                    /* @ts-ignore */
-                    part?.toolInvocation?.result?.content?.[0]?.text;
+                  const result = parseToolInvocationResult(part);
 
-                  if (!text) {
-                    return;
-                  }
-
-                  const props = JSON.parse(text);
-
-                  if (!props) {
+                  if (!result) {
                     return;
                   }
 
                   return (
-                    <Card key={key}>
-                      <CardHeader>
-                        <CardTitle>
-                          Tool:{" "}
-                          {part.toolInvocation.toolName
-                            .replaceAll("_", " ")
-                            .toLocaleUpperCase()}
-                        </CardTitle>
-                        <CardDescription className="flex flex-rowg gap-1">
-                          <Badge variant="outline">
-                            id: {part.toolInvocation.toolCallId}
-                          </Badge>
-                          <Badge variant="outline">
-                            step: {part.toolInvocation.step}
-                          </Badge>
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="overflow-auto">
-                        {(() => {
-                          switch (part.toolInvocation.toolName) {
-                            case "get_content_type": {
-                              return <GetContentType {...props} />;
-                            }
-                            case "list_content_types": {
-                              return <ListContentTypes {...props} />;
-                            }
-                            case "get_entry":
-                            case "update_entry":
-                            case "create_entry": {
-                              return <CreateEntry {...props} />;
-                            }
-                            case "search_entries": {
-                              return <SearchEntries {...props} />;
-                            }
+                    <Dialog key={key}>
+                      <DialogTrigger>
+                        <p className="font-normal text-sm text-gray-700 hover:underline focus:underline">
+                          <span className="font-sans">Tool call: </span>
+                          <span className="font-mono">
+                            {part.toolInvocation.toolName}()
+                          </span>
+                        </p>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Tool call details</DialogTitle>
+                          <div className="flex flex-col gap-4">
+                            <div className="flex flex-row flex-wrap gap-1">
+                              <Badge variant="outline">
+                                tool:{" "}
+                                {part.toolInvocation.toolName
+                                  .replaceAll("_", " ")
+                                  .toLocaleUpperCase()}
+                              </Badge>
+                              <Badge variant="outline">
+                                id: {part.toolInvocation.toolCallId}
+                              </Badge>
+                              <Badge variant="outline">
+                                step: {part.toolInvocation.step}
+                              </Badge>
+                              {Object.entries(part.toolInvocation.args).map(
+                                ([x, y], key) => (
+                                  <Badge key={key}>
+                                    {x}: {JSON.stringify(y)}
+                                  </Badge>
+                                ),
+                              )}
+                            </div>
+                            <div className="overflow-auto">
+                              {(() => {
+                                switch (part.toolInvocation.toolName) {
+                                  case "get_content_type": {
+                                    return <GetContentType {...result} />;
+                                  }
+                                  case "list_content_types": {
+                                    return <ListContentTypes {...result} />;
+                                  }
+                                  case "get_entry":
+                                  case "update_entry":
+                                  case "create_entry": {
+                                    return <GetEntry {...result} />;
+                                  }
+                                  case "search_entries": {
+                                    return <SearchEntries {...result} />;
+                                  }
 
-                            default: {
-                              return (
-                                <pre>
-                                  {JSON.stringify(part.toolInvocation, null, 2)}
-                                </pre>
-                              );
-                            }
-                          }
-                        })()}
-                      </CardContent>
-                    </Card>
+                                  default: {
+                                    return (
+                                      <pre className="overflow-auto w-sm">
+                                        {JSON.stringify(
+                                          part.toolInvocation,
+                                          null,
+                                          2,
+                                        )}
+                                      </pre>
+                                    );
+                                  }
+                                }
+                              })()}
+                            </div>
+                          </div>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
                   );
               }
             })}
