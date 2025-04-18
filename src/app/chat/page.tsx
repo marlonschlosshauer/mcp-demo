@@ -17,6 +17,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { parseToolInvocationResult } from "@/lib/message";
+import { PreviewPage } from "@/components/chat/tools/custom/PreviewPage";
+import { PreviewBlock } from "@/components/chat/tools/custom/PreviewBlock";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
@@ -34,9 +36,9 @@ export default function Chat() {
           )}
           <div className="flex flex-col gap-2 pt-2">
             {message.parts.map((part, i) => {
-              console.log(part);
-
               const key = `${message.id}-${i}`;
+
+              console.log(part);
 
               switch (part.type) {
                 case "text":
@@ -53,6 +55,7 @@ export default function Chat() {
                       <Markdown {...part} />
                     </div>
                   );
+
                 case "tool-invocation":
                   const result = parseToolInvocationResult(part);
 
@@ -111,6 +114,12 @@ export default function Chat() {
                                   }
                                   case "search_entries": {
                                     return <SearchEntries {...result} />;
+                                  }
+                                  case "preview_page": {
+                                    return <PreviewPage {...result} />;
+                                  }
+                                  case "preview_block": {
+                                    return <PreviewBlock {...result} />;
                                   }
 
                                   default: {

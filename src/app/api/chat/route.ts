@@ -1,4 +1,5 @@
 import { getContentfulMcp } from "@/lib/tools/contentful";
+import { getCustomTools } from "@/lib/tools/custom";
 import { getUnsplashMcp } from "@/lib/tools/unsplash";
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
@@ -14,10 +15,12 @@ export async function POST(req: Request) {
 
   const contentfulTools = await contentfulClient.tools();
   const unsplashTools = await unsplashClient.tools();
+  const customTools = await getCustomTools();
 
   const tools = {
     ...contentfulTools,
     ...unsplashTools,
+    ...customTools,
   };
 
   const result = streamText({
@@ -28,6 +31,7 @@ export async function POST(req: Request) {
     tools,
     onFinish: async () => {
       await contentfulClient.close();
+      await unsplashClient.close();
     },
   });
 
