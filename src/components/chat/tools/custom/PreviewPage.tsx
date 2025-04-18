@@ -11,8 +11,10 @@ export const PreviewPage: React.FC<PreviewPageProps> = ({ url }) => {
   }
 
   return (
-    <Link href={url} target="_blank">
-      {url}
-    </Link>
+    <code>
+      <Link href={url} target="_blank" className="underline font-mono">
+        {url}
+      </Link>
+    </code>
   );
 };
