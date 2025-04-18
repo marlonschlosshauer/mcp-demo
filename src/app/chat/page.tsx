@@ -1,10 +1,6 @@
 "use client";
 
 import { Markdown } from "@/components/shared/markdown/Markdown";
-import { GetEntry } from "@/components/chat/tools/contentful/GetEntry";
-import { GetContentType } from "@/components/chat/tools/contentful/GetContentType";
-import { ListContentTypes } from "@/components/chat/tools/contentful/ListContentTypes";
-import { SearchEntries } from "@/components/chat/tools/contentful/SearchEntries";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useChat } from "@ai-sdk/react";
@@ -16,11 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { parseToolInvocationResult } from "@/lib/message";
-import { PreviewPage } from "@/components/chat/tools/custom/PreviewPage";
-import { PreviewBlock } from "@/components/chat/tools/custom/PreviewBlock";
+import { normalizeToolData } from "@/lib/message";
+import { Tool } from "@/components/chat/tools/Tool";
+import { useState } from "react";
 
 export default function Chat() {
+  const [yapping] = useState(false);
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     maxSteps: 5,
   });
@@ -42,6 +39,10 @@ export default function Chat() {
 
               switch (part.type) {
                 case "text":
+                  if (!yapping && message.role !== "user") {
+                    return;
+                  }
+
                   return (
                     <div
                       key={key}
@@ -57,89 +58,60 @@ export default function Chat() {
                   );
 
                 case "tool-invocation":
-                  const result = parseToolInvocationResult(part);
+                  /* @ts-ignore */
+                  const data = normalizeToolData(part);
 
-                  if (!result) {
+                  if (!data) {
                     return;
                   }
 
                   return (
-                    <Dialog key={key}>
-                      <DialogTrigger>
-                        <p className="font-normal text-sm text-gray-700 hover:underline focus:underline">
-                          <span className="font-sans">Tool call: </span>
-                          <span className="font-mono">
-                            {part.toolInvocation.toolName}()
-                          </span>
-                        </p>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Tool call details</DialogTitle>
-                          <div className="flex flex-col gap-4">
-                            <div className="flex flex-row flex-wrap gap-1">
-                              <Badge variant="outline">
-                                tool:{" "}
-                                {part.toolInvocation.toolName
-                                  .replaceAll("_", " ")
-                                  .toLocaleUpperCase()}
-                              </Badge>
-                              <Badge variant="outline">
-                                id: {part.toolInvocation.toolCallId}
-                              </Badge>
-                              <Badge variant="outline">
-                                step: {part.toolInvocation.step}
-                              </Badge>
-                              {Object.entries(part.toolInvocation.args).map(
-                                ([x, y], key) => (
-                                  <Badge key={key}>
-                                    {x}: {JSON.stringify(y)}
-                                  </Badge>
-                                ),
-                              )}
+                    <div key={key} className="flex flex-col gap-2">
+                      <Dialog>
+                        <DialogTrigger>
+                          <p className="font-normal text-sm text-gray-700 hover:underline focus:underline">
+                            <span className="font-sans">Tool call: </span>
+                            <span className="font-mono">
+                              {part.toolInvocation.toolName}()
+                            </span>
+                          </p>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Tool call details</DialogTitle>
+                            <div className="flex flex-col gap-4">
+                              <div className="flex flex-row flex-wrap gap-1">
+                                <Badge variant="outline">
+                                  tool:{" "}
+                                  {part.toolInvocation.toolName
+                                    .replaceAll("_", " ")
+                                    .toLocaleUpperCase()}
+                                </Badge>
+                                <Badge variant="outline">
+                                  id: {part.toolInvocation.toolCallId}
+                                </Badge>
+                                <Badge variant="outline">
+                                  step: {part.toolInvocation.step}
+                                </Badge>
+                                {Object.entries(part.toolInvocation.args).map(
+                                  ([x, y], key) => (
+                                    <Badge key={key}>
+                                      {x}: {JSON.stringify(y)}
+                                    </Badge>
+                                  ),
+                                )}
+                              </div>
+                              <div className="overflow-auto">
+                                <pre className="overflow-auto w-sm">
+                                  {JSON.stringify(part.toolInvocation, null, 2)}
+                                </pre>
+                              </div>
                             </div>
-                            <div className="overflow-auto">
-                              {(() => {
-                                switch (part.toolInvocation.toolName) {
-                                  case "get_content_type": {
-                                    return <GetContentType {...result} />;
-                                  }
-                                  case "list_content_types": {
-                                    return <ListContentTypes {...result} />;
-                                  }
-                                  case "get_entry":
-                                  case "update_entry":
-                                  case "create_entry": {
-                                    return <GetEntry {...result} />;
-                                  }
-                                  case "search_entries": {
-                                    return <SearchEntries {...result} />;
-                                  }
-                                  case "preview_page": {
-                                    return <PreviewPage {...result} />;
-                                  }
-                                  case "preview_block": {
-                                    return <PreviewBlock {...result} />;
-                                  }
-
-                                  default: {
-                                    return (
-                                      <pre className="overflow-auto w-sm">
-                                        {JSON.stringify(
-                                          part.toolInvocation,
-                                          null,
-                                          2,
-                                        )}
-                                      </pre>
-                                    );
-                                  }
-                                }
-                              })()}
-                            </div>
-                          </div>
-                        </DialogHeader>
-                      </DialogContent>
-                    </Dialog>
+                          </DialogHeader>
+                        </DialogContent>
+                      </Dialog>
+                      <Tool name={part.toolInvocation.toolName} data={data} />
+                    </div>
                   );
               }
             })}

@@ -1,12 +1,9 @@
-export const parseToolInvocationResult = (data: any) => {
+import { ToolInvocation } from "@/types/mcp";
+
+export const normalizeToolContentfulData = (data: ToolInvocation) => {
   const text = data?.toolInvocation?.result?.content?.[0]?.text;
 
   if (!text) {
-    if (typeof data === "object") {
-      // @todo: Find correct fix for this
-      return data?.toolInvocation?.result;
-    }
-
     return;
   }
 
@@ -14,11 +11,38 @@ export const parseToolInvocationResult = (data: any) => {
     return text;
   }
 
-  const props = JSON.parse(text);
+  try {
+    const props = JSON.parse(text);
 
-  if (!props) {
+    if (!props) {
+      return;
+    }
+
+    return props;
+  } catch {
+    return;
+  }
+};
+
+export const normalizeToolCustomData = (data: ToolInvocation) => {
+  return data?.toolInvocation?.result;
+};
+
+export const normalizeToolData = (data: ToolInvocation) => {
+  if (!data) {
     return;
   }
 
-  return text;
+  switch (data.toolInvocation.toolName) {
+    case "get_content_type":
+    case "list_content_types":
+    case "get_entry":
+    case "update_entry":
+    case "create_entry":
+    case "search_entries":
+      return normalizeToolContentfulData(data);
+    case "preview_page":
+    case "preview_block":
+      return normalizeToolCustomData(data);
+  }
 };

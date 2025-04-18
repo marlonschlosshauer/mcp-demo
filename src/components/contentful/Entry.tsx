@@ -16,8 +16,7 @@ export const Entry: React.FC<EntryProps> = ({ sys, fields }) => {
     return;
   }
 
-  const title =
-    fields.name && typeof fields.name === "string" ? fields.name : "-";
+  const title = (fields?.name?.["en-US"] ?? "-") as string;
 
   return (
     <Link
