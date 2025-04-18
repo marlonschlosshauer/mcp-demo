@@ -25,7 +25,7 @@ export async function generateStaticParams() {
       return;
     }
 
-    pages.push({ slugs: slug.split("/") });
+    pages.push({ slugs: slug.split("/").filter((slug) => !!slug) });
   });
 
   return pages;

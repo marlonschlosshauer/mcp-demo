@@ -1,7 +1,5 @@
 import { Provider } from "@/components/web/provider/Provider";
 import { draftMode } from "next/headers";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { PreviewIndicator } from "@/components/web/preview/PreviewIndicator";
 
 export default async function ContentfulLayout({

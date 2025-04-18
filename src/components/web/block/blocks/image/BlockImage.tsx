@@ -14,7 +14,7 @@ export const BlockImage: React.FC<BlockImageProps> = ({ headline, image }) => {
   return (
     <div className="flex flex-col gap-4">
       {headline && <h2 className="text-lg font-medium">{headline}</h2>}
-      {image && <Image {...image} />}
+      {image && <Image alt="" {...image} />}
     </div>
   );
 };

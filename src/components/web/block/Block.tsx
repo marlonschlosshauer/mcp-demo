@@ -23,8 +23,6 @@ export const Block: React.FC<BlockProps> = async (props) => {
     blockId,
   );
 
-  console.dir(data, { depth: null, maxArrayLength: null });
-
   if (!data) {
     return;
   }
