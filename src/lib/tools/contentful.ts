@@ -3,12 +3,9 @@ import { experimental_createMCPClient } from "ai";
 
 export const getContentfulMcp = async () => {
   const transport = createTransport(
-    "https://server.smithery.ai/@ivotoby/contentful-management-mcp-server/mcp",
+    "https://server.smithery.ai/@arjunkmrm/contentful-mcp/mcp",
     {
-      host: "https://api.contentful.com",
-      spaceId: process.env.CONTENTFUL_SPACE_ID ?? "",
-      environmentId: process.env.CONTENTFUL_ENVIRONMENT_ID ?? "",
-      managementToken: process.env.CONTENTFUL_CMA_TOKEN ?? "",
+      contentfulManagementAccessToken: process.env.CONTENTFUL_CMA_TOKEN ?? "",
     },
     process.env.SMITHERY_API_KEY ?? "",
   );
