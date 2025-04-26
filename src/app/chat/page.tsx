@@ -12,6 +12,8 @@ export default function Chat() {
 
   const { messages, status } = data;
 
+  console.log(messages);
+
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch gap-4">
       {messages.map((message, key) => (
