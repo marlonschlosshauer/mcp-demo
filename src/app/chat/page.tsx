@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { normalizeToolData } from "@/lib/message";
 import { Tool } from "@/components/chat/tools/Tool";
-import { useState } from "react";
+import { useOptions } from "@/lib/options";
 
 export default function Chat() {
-  const [yapping] = useState(false);
+  const { model, yap } = useOptions();
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     maxSteps: 5,
   });
@@ -39,7 +39,7 @@ export default function Chat() {
 
               switch (part.type) {
                 case "text":
-                  if (!yapping && message.role !== "user") {
+                  if (!yap && message.role !== "user") {
                     return;
                   }
 
@@ -125,7 +125,7 @@ export default function Chat() {
           <Skeleton className="w-[80%] h-[12px] rounded-full" />
         </div>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e, { body: { model } })}>
         <input
           autoFocus
           disabled={status === "submitted" || status === "streaming"}

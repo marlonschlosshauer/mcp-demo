@@ -1,14 +1,14 @@
+import { getSDK } from "@/lib/sdk";
 import { getContentfulMcp } from "@/lib/tools/contentful";
 import { getCustomTools } from "@/lib/tools/custom";
 import { getUnsplashMcp } from "@/lib/tools/unsplash";
-import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, model } = await req.json();
 
   const contentfulClient = await getContentfulMcp();
   const unsplashClient = await getUnsplashMcp();
@@ -23,10 +23,10 @@ export async function POST(req: Request) {
     ...customTools,
   };
 
+  const sdk = getSDK(model);
+
   const result = streamText({
-    model: openai("gpt-4o", {
-      parallelToolCalls: true,
-    }),
+    model: sdk,
     messages,
     tools,
     onFinish: async () => {
