@@ -1,6 +1,5 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -29,7 +28,7 @@ export const Header: React.FC = () => {
     <Sheet>
       <div className="absolute top-0 left-0 w-full flex flex-row-reverse  items-center p-4">
         <SheetTrigger>
-          <SidebarIcon className="w-[32px] h-[32px]" />
+          <SidebarIcon className="w-[24px] h-[24px] fill-gray-900 hover:fill-gray-400 transition" />
         </SheetTrigger>
       </div>
       <SheetContent>
@@ -79,7 +78,7 @@ export const Header: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="true">Yap</SelectItem>
-                  <SelectItem value="false">Don't yap</SelectItem>
+                  <SelectItem value="false">{"Don't yap"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

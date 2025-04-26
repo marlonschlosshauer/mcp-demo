@@ -13,7 +13,7 @@ export interface OptionState {
   yap: boolean;
 }
 
-export interface OptionProps extends Partial<OptionState> {}
+export type OptionProps = Partial<OptionState>;
 
 export interface OptionData extends OptionState {
   setState: (state: OptionState) => void;
