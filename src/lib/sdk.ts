@@ -9,8 +9,12 @@ export const getSDK = (model: Models) => {
     case "Claude 3.5":
       return anthropic("claude-3-5-sonnet-20241022");
     case "gpt-4o":
-    default:
       return openai("gpt-4o", {
+        parallelToolCalls: true,
+      });
+    case "gpt-4o-mini":
+    default:
+      return openai("gpt-4o-mini", {
         parallelToolCalls: true,
       });
   }
