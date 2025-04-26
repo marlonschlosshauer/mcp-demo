@@ -3,7 +3,7 @@ import { experimental_createMCPClient } from "ai";
 
 export const getUnsplashMcp = async () => {
   const transport = createTransport(
-    "https://server.smithery.ai/@hellokaton/unsplash-mcp-server",
+    "https://server.smithery.ai/@hellokaton/unsplash-mcp-server/mcp",
     {
       unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
     },
