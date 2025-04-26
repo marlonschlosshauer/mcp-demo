@@ -27,6 +27,12 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: sdk,
+    system: `
+		Use the spaceId "${process.env.CONTENTFUL_SPACE_ID}" and the environmentId "${process.env.CONTENTFUL_ENVIRONMENT_ID}".
+		If the user is talking getting imagse, assume they mean Unsplash.
+		If you call a Contentful tool, do not echo out the result.
+		For "create_entry" and "update_entry" tool calls, use the "list_content_type" & "get_content_type" tools first to understand the required fields for the entry - make sure you fill the fields with generated (or user specified) data! 
+    `,
     messages,
     tools,
     onFinish: async () => {
