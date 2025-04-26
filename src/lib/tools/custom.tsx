@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 
 export const getCustomTools = async () => {
-  const client = getClient(false);
+  const client = getClient(true);
 
   return {
     preview_page: {
@@ -57,13 +57,13 @@ export const getCustomTools = async () => {
         >(id);
 
         if (!data) {
-          return;
+          return {};
         }
 
         const normalizedData = normalizeBlock(data);
 
         if (!normalizedData) {
-          return;
+          return {};
         }
 
         return normalizedData;
