@@ -13,8 +13,11 @@ export const getSDK = (model: Models) => {
         parallelToolCalls: true,
       });
     case "gpt-4o-mini":
-    default:
       return openai("gpt-4o-mini", {
+        parallelToolCalls: true,
+      });
+    default:
+      return openai("gpt-4.1-mini", {
         parallelToolCalls: true,
       });
   }
