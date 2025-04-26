@@ -26,7 +26,7 @@ export const OptionProvider: React.FC<PropsWithChildren<OptionProps>> = ({
 }) => {
   const [state, setState] = useState<OptionState>({
     model: DEFAULT_MODEL,
-    yap: false,
+    yap: true,
   });
 
   return (
