@@ -1,6 +1,6 @@
 import { ToolInvocation } from "@/types/mcp";
 
-export const normalizeToolContentfulData = (data: ToolInvocation) => {
+export const normalizeToolSmitheryData = (data: ToolInvocation) => {
   const text = data?.toolInvocation?.result?.content?.[0]?.text;
 
   if (!text) {
@@ -40,7 +40,8 @@ export const normalizeToolData = (data: ToolInvocation) => {
     case "update_entry":
     case "create_entry":
     case "search_entries":
-      return normalizeToolContentfulData(data);
+    case "search_photos":
+      return normalizeToolSmitheryData(data);
     case "preview_page":
     case "preview_block":
       return normalizeToolCustomData(data);
