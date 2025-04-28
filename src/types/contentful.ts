@@ -6,7 +6,7 @@ export type BlockTextSkeleton = {
     name: Contentful.EntryFieldTypes.Text;
     overline: Contentful.EntryFieldTypes.Text;
     headline: Contentful.EntryFieldTypes.Text;
-    description: Contentful.EntryFieldTypes.RichText;
+    description: Contentful.EntryFieldTypes.Text;
   };
 };
 
