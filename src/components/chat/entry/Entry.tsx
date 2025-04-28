@@ -12,16 +12,18 @@ export const Entry: React.FC<EntryProps> = ({
   status,
 }) => {
   const { model } = useOptions();
+
   return (
     <div className="whitespace-pre-wrap">
       <Wrapper isUser={true}>
         <form onSubmit={(e) => handleSubmit(e, { body: { model } })}>
-          <input
+          <textarea
             autoFocus
             disabled={status === "submitted" || status === "streaming"}
             className="w-full outline-none resize-none px-3"
             value={input}
             placeholder="Say something..."
+            onKeyDown={(e) => e.code === "Enter" && handleSubmit(e)}
             onChange={handleInputChange}
             style={{ height: "auto" }}
           />
