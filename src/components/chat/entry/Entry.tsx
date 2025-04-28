@@ -25,7 +25,8 @@ export const Entry: React.FC<EntryProps> = ({
             placeholder="Say something..."
             onKeyDown={(e) => e.code === "Enter" && handleSubmit(e)}
             onChange={handleInputChange}
-            style={{ height: "auto" }}
+            /* @ts-ignore */
+            style={{ fieldSizing: "content" }}
           />
         </form>
       </Wrapper>
