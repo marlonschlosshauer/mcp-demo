@@ -1,5 +1,6 @@
 import { getClient } from "@/api/contentful/client";
 import { normalizeBlock } from "@/api/contentful/normalize/blocks";
+import { revalidate } from "@/server/revalidate";
 import {
   BlockImageSkeleton,
   BlockTextSkeleton,
@@ -79,6 +80,23 @@ export const getCustomTools = async () => {
         }
 
         return normalizedData;
+      },
+    },
+    revalidate: {
+      description: "Revalidate pages (paths) from id",
+      parameters: z.object({
+        id: z.string().describe("The id of the entry"),
+      }),
+      execute: async ({ id }: { id: string }) => {
+        if (!id) {
+          return {};
+        }
+
+        const paths = await revalidate(id);
+
+        return {
+          paths,
+        };
       },
     },
   };
