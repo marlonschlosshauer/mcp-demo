@@ -15,8 +15,14 @@ export const getCustomTools = async () => {
       description: "Preview a page from Contentful",
       parameters: z.object({
         id: z.string().describe("The id of the page entry"),
+        isDraft: z
+          .boolean()
+          .optional()
+          .describe(
+            "If the page hasn't been published yet (so has a status of draft)",
+          ),
       }),
-      execute: async ({ id }: { id: string }) => {
+      execute: async ({ id, isDraft }: { id: string; isDraft?: boolean }) => {
         const base = { url: null };
 
         try {
@@ -36,6 +42,12 @@ export const getCustomTools = async () => {
 
           if (!slug) {
             return base;
+          }
+
+          if (isDraft) {
+            return {
+              url: `/api/contentful/draft?slug=${encodeURIComponent(slug)}/`,
+            };
           }
 
           return {
