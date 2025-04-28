@@ -7,7 +7,7 @@ import { Entry } from "@/components/chat/entry/Entry";
 
 export default function Chat() {
   const data = useChat({
-    maxSteps: 5,
+    maxSteps: 50,
   });
 
   const { messages, status } = data;
