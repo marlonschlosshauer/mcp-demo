@@ -31,7 +31,7 @@ export const PreviewIndicator: React.FC = () => {
       <Separator />
       <AlertDialog>
         <AlertDialogTrigger>
-          <div className="flex flex-row content-start">
+          <div className="flex flex-row content-start cursor-pointer">
             <Badge>
               <code>Preview is enabled ⚠️</code>
             </Badge>
