@@ -44,6 +44,7 @@ export const normalizeToolData = (data: ToolInvocation) => {
       return normalizeToolSmitheryData(data);
     case "preview_page":
     case "preview_block":
+    case "revalidate":
       return normalizeToolCustomData(data);
   }
 };
