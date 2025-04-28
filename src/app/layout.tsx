@@ -15,11 +15,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "🤖",
   description: "Demo Contentful & Unsplash MCP with custom tool.",
-  themeColor: "#FFF",
   robots: {
     index: false,
     follow: false,
   },
+};
+
+export const viewport = {
+  themeColor: "white",
 };
 
 export default function RootLayout({
