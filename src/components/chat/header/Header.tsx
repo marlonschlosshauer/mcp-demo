@@ -28,7 +28,7 @@ export const Header: React.FC = () => {
     <Sheet>
       <div className="absolute top-0 left-0 w-full flex flex-row-reverse  items-center p-4">
         <SheetTrigger>
-          <SidebarIcon className="w-[24px] h-[24px] fill-gray-900 hover:fill-gray-400 transition" />
+          <SidebarIcon className="w-[24px] h-[24px] hover:fill-gray-200 transition-transform transform hover:rotate-90 focus:rotate-90" />
         </SheetTrigger>
       </div>
       <SheetContent>
